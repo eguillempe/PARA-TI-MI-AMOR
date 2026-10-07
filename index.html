@@ -1,0 +1,679 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Para mi amor ❤️</title>
+
+<style>
+*{box-sizing:border-box}
+:root{
+  --pink:#f43f7f;
+  --pink2:#d92d68;
+  --ink:#352036;
+  --skin:#f3b294;
+  --skin2:#d88368;
+}
+html,body{margin:0;min-height:100%}
+body{
+  min-height:100vh;
+  display:flex;
+  justify-content:center;
+  align-items:center;
+  padding:18px;
+  background:
+    radial-gradient(circle at 20% 10%,#fff 0 12%,transparent 35%),
+    linear-gradient(135deg,#fff4fb,#efe6ff);
+  font-family:Arial,Helvetica,sans-serif;
+  color:var(--ink);
+}
+.card{
+  width:min(820px,97vw);
+  background:#fff;
+  border-radius:38px;
+  padding:18px;
+  box-shadow:0 24px 70px #6e456022;
+  overflow:hidden;
+}
+.screen{display:none;text-align:center;animation:fade .55s ease}
+.screen.active{display:block}
+h1{font-size:clamp(30px,5vw,48px);margin:12px 0}
+p{font-size:18px}
+.actions{
+  display:flex;justify-content:center;align-items:center;gap:15px;
+  flex-wrap:wrap;margin:28px 0
+}
+button{
+  border:0;border-radius:999px;padding:15px 30px;
+  font-size:17px;font-weight:800;cursor:pointer;
+  transition:.25s;box-shadow:0 10px 25px #d72d6825
+}
+button:hover{transform:translateY(-2px) scale(1.03)}
+.yes,.restart{
+  color:#fff;background:linear-gradient(135deg,#ff5d92,#d92d68)
+}
+.no{background:#f2e3eb;color:#70485d}
+.big-heart{font-size:78px;animation:pulse 1.5s infinite}
+@keyframes pulse{50%{transform:scale(1.12)}}
+@keyframes fade{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:none}}
+
+/* CALENDARIO */
+.calendar{
+  width:min(430px,96%);
+  margin:20px auto;
+  padding:18px;
+  background:#fff5fa;
+  border-radius:24px;
+  box-shadow:inset 0 0 0 1px #f0d8e5;
+}
+.cal-title{display:flex;justify-content:space-between;font-weight:900;margin-bottom:13px}
+.week,.days{display:grid;grid-template-columns:repeat(7,1fr);gap:6px}
+.week div{font-size:12px;color:#a26c85;font-weight:800}
+.day{padding:10px 0;border-radius:12px}
+.day.muted{color:#d0b8c5}
+.day.selected{
+  color:#fff;background:var(--pink);font-weight:900;
+  box-shadow:0 7px 15px #f43f7f44
+}
+
+/* ESCENA */
+.scene{
+  position:relative;
+  width:100%;
+  aspect-ratio:1.62;
+  min-height:430px;
+  overflow:hidden;
+  border-radius:30px;
+  background:
+    radial-gradient(circle at 50% 37%,#74475f 0 2%,#3e263b 16%,transparent 35%),
+    linear-gradient(#160f1b 0 59%,#08090b 59%);
+  box-shadow:inset 0 0 70px #0008;
+}
+
+/* luz, sin bolas */
+.wall-glow{
+  position:absolute;left:50%;top:65px;
+  width:230px;height:190px;transform:translateX(-50%);
+  background:radial-gradient(ellipse,#a36c8060 0%,transparent 70%);
+  z-index:1;
+}
+.lamp{
+  position:absolute;left:50%;top:-8px;transform:translateX(-50%);
+  overflow:hidden;
+  width:66px;height:105px;
+  background:linear-gradient(90deg,#a66a2b,#ffe18a,#a86b2b);
+  clip-path:polygon(30% 0,70% 0,100% 100%,0 100%);
+  filter:drop-shadow(0 12px 16px #e6a64255);
+  z-index:3;
+}
+.lamp-light{
+  position:absolute;left:50%;top:72px;
+  width:175px;height:160px;transform:translateX(-50%);
+  background:radial-gradient(ellipse,#ffcf7040,transparent 70%);
+  z-index:2;
+}
+.floor-line{
+  position:absolute;left:0;right:0;top:59%;
+  height:2px;background:#593c51;z-index:3;
+}
+
+/* PERSONAJES: nuevos diseños, detrás de la mesa */
+.person{
+  position:absolute;
+  bottom:18%;
+  width:31%;
+  height:67%;
+  z-index:8;
+  transform-origin:center bottom;
+}
+.person.left{left:6%}
+.person.right{right:6%}
+
+.hair-back{
+  position:absolute;
+  top:-2%;
+  left:9%;
+  width:82%;
+  height:53%;
+  border-radius:50% 50% 42% 42%;
+  background:linear-gradient(90deg,#241317,#633026 48%,#1b1013);
+  z-index:2;
+  box-shadow:inset -10px 0 18px #0005;
+}
+.left .hair-back{border-radius:52% 46% 43% 48%}
+.right .hair-back{border-radius:46% 52% 48% 43%;background:linear-gradient(90deg,#181014,#4d2827 48%,#211217)}
+
+.hair-side{
+  position:absolute;top:19%;width:17%;height:62%;
+  border-radius:22px 22px 45px 45px;
+  background:linear-gradient(90deg,#241216,#663126,#241216);
+  z-index:3;
+}
+.left .hair-side{left:1%}
+.right .hair-side{right:1%}
+
+.head{
+  position:absolute;
+  top:3%;left:18%;
+  width:64%;height:43%;
+  border-radius:48% 48% 46% 46%;
+  background:radial-gradient(circle at 36% 25%,#ffdccc 0 18%,#f1b296 55%,#c9755e 100%);
+  box-shadow:inset -11px -8px 18px #9f584644;
+  z-index:6;
+}
+
+/* caras mirando hacia el centro */
+.eye{
+  position:absolute;top:25%;
+  width:29px;height:18px;
+  background:#fff;border-radius:50%;
+  box-shadow:0 2px 2px #0002;
+}
+.eye:after{
+  content:"";
+  position:absolute;width:9px;height:9px;top:5px;
+  background:#252027;border-radius:50%;
+}
+.left .eye{right:10%}
+.right .eye{left:10%}
+.left .eye:after{left:13px}
+.right .eye:after{left:7px}
+
+.brow{
+  position:absolute;top:18%;
+  width:32px;height:5px;border-radius:10px;
+  background:#43262a;
+}
+.left .brow{right:8%;transform:rotate(-5deg)}
+.right .brow{left:8%;transform:rotate(5deg)}
+
+.nose{
+  position:absolute;top:31%;
+  width:20px;height:20px;
+  border-bottom:3px solid #bd6e59;
+  border-radius:0 0 16px 16px;
+}
+.left .nose{right:-1%}
+.right .nose{left:-1%}
+
+.mouth{
+  position:absolute;top:43%;
+  width:30px;height:12px;
+  background:#b92f69;
+  border-radius:50% 50% 55% 55%;
+  box-shadow:inset 0 -3px 0 #7f204d;
+}
+.mouth:before{
+  content:"";
+  position:absolute;left:5px;right:5px;top:0;
+  height:3px;background:#d85884;border-radius:50%;
+}
+.left .mouth{right:-2%}
+.right .mouth{left:-2%}
+
+/* pequeña mejilla, no líneas flotantes */
+.cheek{
+  position:absolute;top:42%;
+  width:23px;height:12px;border-radius:50%;
+  background:#e58d8a55;
+}
+.left .cheek{right:18%}
+.right .cheek{left:18%}
+
+.neck{
+  position:absolute;top:38%;left:40%;
+  width:20%;height:17%;
+  border-radius:0 0 13px 13px;
+  background:linear-gradient(90deg,#c77760,#f0ad90,#c77760);
+  z-index:4;
+}
+.necklace{
+  position:absolute;top:45%;left:27%;
+  width:46%;height:23px;
+  border:2px solid #ffd866;border-top:0;
+  border-radius:0 0 28px 28px;
+  z-index:7;
+}
+.body{
+  position:absolute;bottom:0;left:12%;
+  width:76%;height:54%;
+  border-radius:45px 45px 18px 18px;
+  box-shadow:inset -18px 0 25px #0002;
+  z-index:5;
+}
+.left .body{background:linear-gradient(105deg,#9e1850,#dc4d84,#9b194f)}
+.right .body{background:linear-gradient(105deg,#4a2092,#7650df,#4b238e)}
+
+.shoulder{
+  position:absolute;top:47%;
+  width:35%;height:15%;
+  border-radius:50%;
+  background:inherit;z-index:7;
+}
+
+/* brazos: abrazo */
+.arm{
+  position:absolute;
+  top:56%;
+  width:54%;height:15%;
+  border-radius:999px;
+  background:linear-gradient(90deg,#c3745b,#f0b095,#bd6d55);
+  z-index:18;
+  transform-origin:15% 50%;
+}
+.left .arm{right:-15%;transform:rotate(29deg)}
+.right .arm{left:-15%;transform:rotate(-29deg)}
+
+.hand{display:none}
+
+/* abrazo y acercamiento */
+.left.kissing{animation:moveL 7s 1s ease-in-out forwards}
+.right.kissing{animation:moveR 7s 1s ease-in-out forwards}
+
+@keyframes moveL{
+  0%,27%{transform:translateX(0)}
+  55%{transform:translateX(9%)}
+  72%{transform:translateX(23%)}
+  100%{transform:translateX(31%)}
+}
+@keyframes moveR{
+  0%,27%{transform:translateX(0)}
+  55%{transform:translateX(-9%)}
+  72%{transform:translateX(-23%)}
+  100%{transform:translateX(-31%)}
+}
+.left.kissing .arm{animation:armL 7s 1s ease-in-out forwards}
+.right.kissing .arm{animation:armR 7s 1s ease-in-out forwards}
+@keyframes armL{
+  0%,30%{transform:rotate(24deg)}
+  65%{transform:rotate(32deg)}
+  100%{transform:rotate(38deg)}
+}
+@keyframes armR{
+  0%,30%{transform:rotate(-24deg)}
+  65%{transform:rotate(-32deg)}
+  100%{transform:rotate(-38deg)}
+}
+
+/* beso: giro suave de cabeza */
+.left.kissing .head{animation:headL 7s 1s ease-in-out forwards}
+.right.kissing .head{animation:headR 7s 1s ease-in-out forwards}
+@keyframes headL{
+  0%,67%{transform:rotate(0)}
+  100%{transform:rotate(5deg) translate(4px,5px)}
+}
+@keyframes headR{
+  0%,67%{transform:rotate(0)}
+  100%{transform:rotate(-5deg) translate(-4px,5px)}
+}
+
+/* MESA EN PRIMER PLANO: ellas quedan detrás */
+.table{
+  position:absolute;
+  left:50%;bottom:10%;
+  width:70%;height:17%;
+  transform:translateX(-50%);
+  border-radius:50%;
+  background:radial-gradient(ellipse at 50% 20%,#986247,#5b3226 75%);
+  box-shadow:0 10px 20px #0009;
+  z-index:30;
+}
+.table-front{
+  position:absolute;
+  left:50%;bottom:7%;
+  width:70%;height:8%;
+  transform:translateX(-50%);
+  border-radius:0 0 24px 24px;
+  background:linear-gradient(#754431,#47261f);
+  z-index:31;
+}
+.table-leg{
+  position:absolute;left:50%;bottom:-2%;
+  width:72px;height:27%;
+  transform:translateX(-50%);
+  background:linear-gradient(90deg,#3b211b,#75432e,#3b211b);
+  z-index:28;
+}
+
+/* platos y copas encima de la mesa */
+.plate{
+  position:absolute;bottom:18.5%;
+  width:112px;height:31px;
+  border-radius:50%;
+  background:#fff;border:3px solid #ddd;
+  box-shadow:0 2px 4px #0004;
+  z-index:34;
+}
+.plate:after{
+  content:"";position:absolute;left:22px;right:22px;top:6px;height:14px;
+  border-radius:50%;
+  background:radial-gradient(ellipse,#dd8a49 0 54%,#b65e31 58%);
+}
+.plate.left{left:24%}
+.plate.right{right:24%}
+
+.glass{
+  position:absolute;bottom:17%;width:32px;height:73px;z-index:35
+}
+.glass .bowl{
+  position:absolute;top:0;left:0;width:32px;height:37px;
+  border:3px solid #eee;border-top:0;border-radius:0 0 16px 16px;
+}
+.glass .wine{
+  position:absolute;left:4px;top:19px;width:24px;height:15px;
+  border-radius:0 0 12px 12px;
+  background:linear-gradient(#c52c64,#7e1745);
+}
+.glass .stem{
+  position:absolute;left:14px;top:36px;width:3px;height:30px;background:#eee
+}
+.glass .base{
+  position:absolute;left:0;bottom:0;width:33px;height:3px;background:#eee;border-radius:4px
+}
+.glass.left{left:37%}
+.glass.right{right:37%}
+
+.candle{
+  position:absolute;left:50%;bottom:19%;
+  transform:translateX(-50%);
+  width:18px;height:61px;
+  background:linear-gradient(90deg,#ddd,#fff,#ddd);
+  border-radius:6px;z-index:36
+}
+.flame{
+  position:absolute;left:50%;top:-27px;
+  width:19px;height:29px;transform:translateX(-50%) rotate(45deg);
+  border-radius:50% 50% 50% 0;
+  background:linear-gradient(#fff5a1,#ff8c17);
+  box-shadow:0 0 18px #ffae3d;
+}
+
+/* beso */
+.kiss-heart{
+  position:absolute;left:50%;top:43%;
+  transform:translate(-50%,-50%) scale(.15);
+  opacity:0;font-size:46px;z-index:50;
+  animation:kiss 7s 1s ease-in-out forwards;
+}
+@keyframes kiss{
+  0%,72%{opacity:0;transform:translate(-50%,-50%) scale(.15)}
+  80%{opacity:1;transform:translate(-50%,-50%) scale(1.15)}
+  100%{opacity:1;transform:translate(-50%,-60%) scale(1)}
+}
+.spark{
+  position:absolute;left:50%;top:42%;
+  opacity:0;font-size:23px;z-index:49;
+  animation:spark 7s 1s ease-in-out forwards;
+}
+@keyframes spark{
+  0%,76%{opacity:0}
+  82%,100%{opacity:1;transform:scale(1.2)}
+}
+
+.final-title{margin:20px 0 5px}
+.final-sub{margin:0}
+.final-text{color:#74445e;margin:25px 0 17px}
+
+.music-status{
+  margin-top:11px;font-size:13px;color:#a16e87;
+}
+.music-toggle{
+  display:inline-flex;align-items:center;gap:8px;
+  margin-top:12px;padding:10px 17px;font-size:14px;
+  color:#a52b5e;background:#fff0f6;
+  box-shadow:none;border:1px solid #f4bfd3;
+}
+.music-toggle.playing{background:#ffe0ec}
+
+@media(max-width:650px){
+  body{padding:8px}
+  .card{padding:10px;border-radius:28px}
+  .scene{min-height:0;aspect-ratio:1.18}
+  .person{width:35%;height:61%;bottom:19%}
+  .person.left{left:1%}.person.right{right:1%}
+  .table,.table-front{width:84%}
+  .plate{width:75px;height:24px;bottom:18%}
+  .plate:after{left:14px;right:14px;height:10px}
+  .plate.left{left:15%}.plate.right{right:15%}
+  .glass.left{left:32%}.glass.right{right:32%}
+  .lamp{width:47px;height:75px}
+  .eye{transform:scale(.8)}
+  .mouth{transform:scale(.8)}
+}
+
+/* Si el usuario prefiere menos movimiento */
+@media(prefers-reduced-motion:reduce){
+  *,*::before,*::after{animation-duration:.01ms!important;animation-iteration-count:1!important}
+}
+</style>
+</head>
+
+<body>
+<div class="card">
+
+<section id="screen1" class="screen active">
+  <div class="big-heart">💗</div>
+  <h1>¿Me disculpas, mi amor?</h1>
+  <p>No quiero que estés triste conmigo. ❤️</p>
+  <div class="actions">
+    <button class="yes" onclick="go('screen2',true)">Sí ❤️</button>
+    <button class="no" id="noBtn">No 🥺</button>
+  </div>
+</section>
+
+<section id="screen2" class="screen">
+  <div class="big-heart">🥰</div>
+  <h1>Gracias por perdonarme ❤️</h1>
+  <p>Quiero hacer algo bonito para ti.</p>
+  <button class="yes" onclick="go('screen3',true)">Continuar 💕</button>
+</section>
+
+<section id="screen3" class="screen">
+  <h1>Por ti haría muchas cosas ❤️</h1>
+  <p>Y quiero empezar por algo especial...</p>
+  <h2>¿Quieres ir a cenar conmigo?</h2>
+
+  <div class="calendar">
+    <div class="cal-title"><span>Octubre</span><span>2026</span></div>
+    <div class="week">
+      <div>L</div><div>M</div><div>X</div><div>J</div><div>V</div><div>S</div><div>D</div>
+    </div>
+    <div class="days">
+      <div class="day muted">28</div><div class="day muted">29</div><div class="day muted">30</div>
+      <div class="day">1</div><div class="day">2</div><div class="day">3</div><div class="day">4</div>
+      <div class="day">5</div><div class="day">6</div><div class="day">7</div><div class="day selected">8</div>
+      <div class="day">9</div><div class="day">10</div><div class="day">11</div>
+      <div class="day">12</div><div class="day">13</div><div class="day">14</div><div class="day">15</div>
+      <div class="day">16</div><div class="day">17</div><div class="day">18</div>
+      <div class="day">19</div><div class="day">20</div><div class="day">21</div><div class="day">22</div>
+      <div class="day">23</div><div class="day">24</div><div class="day">25</div>
+      <div class="day">26</div><div class="day">27</div><div class="day">28</div><div class="day">29</div>
+      <div class="day">30</div><div class="day">31</div>
+    </div>
+  </div>
+
+  <div class="actions">
+    <button class="yes" onclick="go('screen4',true)">Sí, quiero ❤️</button>
+  </div>
+</section>
+
+<section id="screen4" class="screen">
+
+  <div class="scene">
+
+    <div class="wall-glow"></div>
+    <div class="lamp-light"></div>
+    <div class="lamp"></div>
+    <div class="floor-line"></div>
+
+    <!-- PERSONA 1 -->
+    <div class="person left kissing">
+      <div class="hair-back"></div>
+      <div class="hair-side"></div>
+      <div class="head">
+        <div class="brow"></div>
+        <div class="eye"></div>
+        <div class="nose"></div>
+        <div class="cheek"></div>
+        <div class="mouth"></div>
+      </div>
+      <div class="neck"></div>
+      <div class="necklace"></div>
+      <div class="body"></div>
+      <div class="arm"></div>
+    </div>
+
+    <!-- PERSONA 2 -->
+    <div class="person right kissing">
+      <div class="hair-back"></div>
+      <div class="hair-side"></div>
+      <div class="head">
+        <div class="brow"></div>
+        <div class="eye"></div>
+        <div class="nose"></div>
+        <div class="cheek"></div>
+        <div class="mouth"></div>
+      </div>
+      <div class="neck"></div>
+      <div class="necklace"></div>
+      <div class="body"></div>
+      <div class="arm"></div>
+    </div>
+
+    <!-- MESA EN PRIMER PLANO -->
+    <div class="table-leg"></div>
+    <div class="table"></div>
+    <div class="table-front"></div>
+
+    <!-- PLATOS: sin cubiertos -->
+    <div class="plate left"></div>
+    <div class="plate right"></div>
+
+    <!-- COPAS -->
+    <div class="glass left">
+      <div class="bowl"></div>
+      <div class="wine"></div>
+      <div class="stem"></div>
+      <div class="base"></div>
+    </div>
+
+    <div class="glass right">
+      <div class="bowl"></div>
+      <div class="wine"></div>
+      <div class="stem"></div>
+      <div class="base"></div>
+    </div>
+
+    <div class="candle"><div class="flame"></div></div>
+
+    <div class="kiss-heart">💗</div>
+    <div class="spark">✨</div>
+  </div>
+
+  <h1 class="final-title">Nuestra cena 💗</h1>
+  <p class="final-sub">Tú y yo, juntas.</p>
+  <p class="final-text">Porque contigo quiero compartir muchos más momentos bonitos. 💕</p>
+
+  <div class="actions">
+    <button class="restart" onclick="location.reload()">Volver a empezar 💞</button>
+    <button id="musicButton" class="music-toggle" onclick="toggleMusic()">🎵 Pausar música</button>
+  </div>
+
+  <div id="musicStatus" class="music-status">🎵 Nuestra canción</div>
+</section>
+
+<!--
+  IMPORTANTE:
+  Este archivo espera encontrar el MP3 en la MISMA carpeta:
+  José y el Toro - Qué gusto conocerte.mp3
+-->
+<audio id="backgroundMusic" preload="auto" loop>
+  <source src="José y el Toro - Qué gusto conocerte.mp3" type="audio/mpeg">
+</audio>
+
+</div>
+
+<script>
+const audio = document.getElementById("backgroundMusic");
+const musicButton = document.getElementById("musicButton");
+const musicStatus = document.getElementById("musicStatus");
+
+audio.volume = 0.42;
+
+async function startMusic(){
+  try{
+    audio.volume = 0.42;
+    await audio.play();
+    musicButton.textContent = "🔊 Música activada";
+    musicButton.classList.add("playing");
+    musicStatus.textContent = "🎵 José y el Toro — Qué gusto conocerte";
+  }catch(error){
+    musicButton.textContent = "🎵 Activar música";
+    musicButton.classList.remove("playing");
+    musicStatus.textContent = "🎵 Toca «Activar música» para escucharla";
+    console.log("La reproducción fue bloqueada:", error);
+  }
+}
+
+function go(id,playMusic=false){
+  document.querySelectorAll(".screen").forEach(s=>s.classList.remove("active"));
+  document.getElementById(id).classList.add("active");
+
+  if(playMusic){
+    startMusic();
+  }
+}
+
+async function toggleMusic(){
+  if(audio.paused){
+    await startMusic();
+  }else{
+    audio.pause();
+    musicButton.textContent = "🎵 Reproducir música";
+    musicButton.classList.remove("playing");
+    musicStatus.textContent = "🎵 Música pausada";
+  }
+}
+
+/* Botón No que escapa */
+const noBtn=document.getElementById("noBtn");
+
+function escapeNo(){
+  const margin=15;
+  const maxX=Math.max(margin,window.innerWidth-noBtn.offsetWidth-margin);
+  const maxY=Math.max(margin,window.innerHeight-noBtn.offsetHeight-margin);
+
+  noBtn.style.position="fixed";
+  noBtn.style.left=(margin+Math.random()*(maxX-margin))+"px";
+  noBtn.style.top=(margin+Math.random()*(maxY-margin))+"px";
+}
+noBtn.addEventListener("mouseenter",escapeNo);
+noBtn.addEventListener("touchstart",(e)=>{
+  e.preventDefault();
+  escapeNo();
+},{passive:false});
+
+/* Si el archivo MP3 no está en la misma carpeta, mostramos aviso */
+audio.addEventListener("error",()=>{
+  musicStatus.textContent="⚠️ No encuentro el MP3. Déjalo junto a index.html.";
+});
+
+/* Reinicia la animación del abrazo/beso al entrar a la escena */
+function restartKissAnimation(){
+  document.querySelectorAll(".kissing").forEach(el=>{
+    el.classList.remove("kissing");
+    void el.offsetWidth;
+    el.classList.add("kissing");
+  });
+}
+
+const originalGo=go;
+go=function(id,playMusic=false){
+  originalGo(id,playMusic);
+  if(id==="screen4"){
+    setTimeout(restartKissAnimation,30);
+  }
+};
+</script>
+</body>
+</html>
